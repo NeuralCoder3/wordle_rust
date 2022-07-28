@@ -14,7 +14,6 @@ fn main() {
         let words = line.split_whitespace();
         for word in words {
             trie.insert(word);
-            // println!("inserted {}", word);
         }
     }
 
@@ -80,21 +79,32 @@ fn get_histogram(word: &str) -> Vec<u8> {
 }
 
 fn get_feedback(chosen_word: &str, guess: &str) -> String {
-    let mut feedback = String::new();
     let mut histogram = get_histogram(chosen_word);
-    for (i, c) in guess.chars().enumerate() {
+    let mut feedback = String::new();
+    for(i, c) in guess.chars().enumerate() {
         let index = c as usize - 'a' as usize;
         if c == chosen_word.chars().nth(i).unwrap() {
             feedback.push('🟩');
-            histogram[index] -= 1;
-        } else if chosen_word.contains(c) && histogram[index] > 0 {
-            feedback.push('🟨');
             histogram[index] -= 1;
         } else {
             feedback.push('⬛');
         }
     }
+
+    for (i, c) in guess.chars().enumerate() {
+        let index = c as usize - 'a' as usize;
+        if c == chosen_word.chars().nth(i).unwrap() {
+            continue;
+        }
+        if chosen_word.contains(c) && histogram[index] > 0 {
+            feedback.push('🟨');
+            histogram[index] -= 1;
+        }
+    }
     feedback
+
+
+
 }
 
 
